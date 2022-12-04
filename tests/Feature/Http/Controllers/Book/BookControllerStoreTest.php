@@ -13,6 +13,7 @@ use Tests\TestCase;
 
 /**
  * @group Book
+ *
  * @see \App\Http\Controllers\BookController
  */
 class BookControllerStoreTest extends TestCase
@@ -38,6 +39,24 @@ class BookControllerStoreTest extends TestCase
             'isbn' => '978-0-13-601970-1',
             'price' => 22.99,
         ];
+
+        $response = $this->post('/api/books', $data);
+
+        $response->assertStatus(Response::HTTP_CREATED)
+            ->assertJson($data);
+
+        $book = Book::find($response->json('id'));
+        $this->assertNotEmpty($book);
+    }
+
+    public function testThatBookWithDuplicateIsbnCannotBeAdded()
+    {
+        $data = [
+            'title' => ':TEST_TITLE:',
+            'isbn' => '978-0-13-601970-1',
+            'price' => 22.99,
+        ];
+        $existingBook = Book::factory(1, $data);
 
         $response = $this->post('/api/books', $data);
 

@@ -5,9 +5,6 @@ You can install using the [instructions](https://laravel.com/docs/9.x/sail) prov
 
 # Linting
 
-You can lint this project using [Duster](https://github.com/tighten/duster) with the following command:
+[Pint](https://laravel.com/docs/9.x/pint#configuring-pint) is installed by default with Laravel 9, you can run it with:
 
-To find and fix linting issues use: `sail bash vendor/bin/duster fix`
-
-To lint without fixes: `sail bash vendor/bin/duster`
-
+`sail pint`

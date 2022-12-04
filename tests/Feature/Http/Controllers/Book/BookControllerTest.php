@@ -10,6 +10,7 @@ use Tests\TestCase;
 
 /**
  * @group Book
+ *
  * @see \App\Http\Controllers\BookController
  */
 class BookControllerTest extends TestCase

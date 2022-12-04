@@ -19,7 +19,7 @@ class BookFactory extends Factory
         return [
             'isbn' => $this->faker->boolean ? $this->faker->isbn13() : $this->faker->isbn10(),
             'title' => $this->faker->text(255),
-            'price' => $this->faker->randomFloat(2, 1, 1000)
+            'price' => $this->faker->randomFloat(2, 1, 1000),
         ];
     }
 }
