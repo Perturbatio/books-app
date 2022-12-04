@@ -31,9 +31,10 @@ class CreateBookRequestTest extends TestCase
     public function testValidationRulesHaveNotChanged()
     {
         $this->assertExactValidationRules([
-            'isbn' => 'required|isbn|unique:books,isbn',
+            'isbn' => 'required|isbn|unique:books,isbn|regex:/^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$/',
             'title' => 'required|string|min:1|max:255',
             'price' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/|min:0|max:9999999999.99',
+            'authors.*' => 'required|exists:authors,id',
         ], $this->formRequest->rules());
     }
 
@@ -51,9 +52,7 @@ class CreateBookRequestTest extends TestCase
         $validator = Validator::make($data, $this->formRequest->rules());
         $this->assertEquals($shouldPass, $validator->passes());
         if (! empty($expected)) {
-            foreach ($expected as $key => $message) {
-                $this->assertEquals($expected, $validator->errors()->toArray());
-            }
+            $this->assertEquals($expected, $validator->errors()->toArray());
         }
     }
 
@@ -72,14 +71,14 @@ class CreateBookRequestTest extends TestCase
 
         yield [ // invalid data provided
             'data' => [
-                'isbn' => '1234',
+                'isbn' => '978-INVALID-ISBN-1491905012',
                 'title' => 123,
                 'price' => '£12',
             ],
             'shouldPass' => false,
             'expected' => [
                 'isbn' => [
-                    'isbn must be a valid International Standard Book Number (ISBN).',
+                    'The isbn format is invalid.',
                 ],
                 'title' => [
                     'The title must be a string.',

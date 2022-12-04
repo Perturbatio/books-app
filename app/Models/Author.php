@@ -5,22 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-/**
- * @see \Database\Factories\BookFactory
- */
-class Book extends Model
+class Author extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'title',
-        'isbn',
-        'price',
+        'full_name',
     ];
 
-    public function authors(): BelongsToMany
+    public function books(): BelongsToMany
     {
-        return $this->belongsToMany('Author');
+        return $this->BelongsToMany('Book');
     }
 }

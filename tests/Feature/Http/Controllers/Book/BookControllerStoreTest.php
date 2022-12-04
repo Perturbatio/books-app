@@ -4,10 +4,12 @@ namespace Tests\Feature\Http\Controllers\Book;
 
 use App\Http\Controllers\BookController;
 use App\Http\Requests\CreateBookRequest;
+use App\Models\Author;
 use App\Models\Book;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
 use JMac\Testing\Traits\AdditionalAssertions;
 use Tests\TestCase;
 
@@ -34,16 +36,29 @@ class BookControllerStoreTest extends TestCase
 
     public function testThatBooksCanBeAdded()
     {
+        $author = Author::factory(1)->createOne();
+
         $data = [
             'title' => ':TEST_TITLE:',
             'isbn' => '978-0-13-601970-1',
             'price' => 22.99,
+            'authors' => [$author->id],
         ];
 
         $response = $this->post('/api/books', $data);
 
         $response->assertStatus(Response::HTTP_CREATED)
-            ->assertJson($data);
+            ->assertJson([
+                'title' => ':TEST_TITLE:',
+                'isbn' => '978-0-13-601970-1',
+                'price' => 22.99,
+                'authors' => [
+                    [
+                        'id' => $author->id,
+                        'full_name' => $author->full_name,
+                    ],
+                ],
+            ]);
 
         $book = Book::find($response->json('id'));
         $this->assertNotEmpty($book);
@@ -56,15 +71,17 @@ class BookControllerStoreTest extends TestCase
             'isbn' => '978-0-13-601970-1',
             'price' => 22.99,
         ];
-        $existingBook = Book::factory(1, $data);
+
+        Book::factory()
+            ->has(Author::factory()->count(1))
+            ->createOne($data);
 
         $response = $this->post('/api/books', $data);
 
-        $response->assertStatus(Response::HTTP_CREATED)
+        $this->expectException(ValidationException::class);
+        $this->expectErrorMessage('The ISBN you have provided is already in the database.');
+        $response->assertStatus(Response::HTTP_FOUND)
             ->assertJson($data);
-
-        $book = Book::find($response->json('id'));
-        $this->assertNotEmpty($book);
     }
 
     public function testCreateBookRequestValidation()

@@ -2,53 +2,42 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreateBookRequest;
-use App\Http\Resources\Book as BookResource;
-use App\Http\Resources\BookCollection as BookResourceCollection;
-use App\Models\Book;
+use App\Http\Resources\AuthorCollection as AuthorResourceCollection;
+use App\Models\Author;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
-/**
- * @see \Tests\Feature\Http\Controllers\Book\
- */
-class BookController extends Controller
+class AuthorController extends Controller
 {
     /**
      * Display a listing of the resource.
+     *
+     * @return AuthorResourceCollection
      */
     public function index()
     {
-        return new BookResourceCollection(Book::all());
+        return new AuthorResourceCollection(Author::all());
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  CreateBookRequest  $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
-     *
-     * @throws \Throwable
      */
-    public function store(CreateBookRequest $request)
+    public function store(Request $request)
     {
-        $book = new Book($request->only(['title', 'isbn', 'price']));
-        $book->saveOrFail();
-
-        $book->authors()->attach($request->get('authors'));
-
-        return response(new BookResource($book), Response::HTTP_CREATED);
+        //
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  Book $book
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Book $book)
+    public function show($id)
     {
-        return response(new BookResource($book), Response::HTTP_OK);
+        //
     }
 
     /**
