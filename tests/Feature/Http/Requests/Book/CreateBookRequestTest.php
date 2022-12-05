@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Http\Requests\Book;
 
-use App\Http\Requests\CreateBookRequest;
+use App\Http\Requests\Book\CreateBookRequest;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Validator;
 use JMac\Testing\Traits\AdditionalAssertions;
@@ -12,7 +12,7 @@ use Tests\TestCase;
  * @group Requests
  * @group Book
  *
- * @see \App\Http\Requests\CreateBookRequest
+ * @see \App\Http\Requests\Book\CreateBookRequest
  */
 class CreateBookRequestTest extends TestCase
 {

@@ -3,7 +3,7 @@
 namespace Tests\Feature\Http\Controllers\Book;
 
 use App\Http\Controllers\BookController;
-use App\Http\Requests\CreateBookRequest;
+use App\Http\Requests\Book\CreateBookRequest;
 use App\Models\Author;
 use App\Models\Book;
 use Illuminate\Foundation\Testing\RefreshDatabase;

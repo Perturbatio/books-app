@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreateBookRequest;
+use App\Http\Requests\Book\CreateBookRequest;
+use App\Http\Requests\Book\IndexBooksRequest;
 use App\Http\Resources\Book as BookResource;
 use App\Http\Resources\BookCollection as BookResourceCollection;
 use App\Models\Book;
@@ -17,9 +18,13 @@ class BookController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(IndexBooksRequest $request)
     {
-        return new BookResourceCollection(Book::all());
+        $query = Book::query();
+
+        $request->whenHas('filters.authorName', fn ($authorName) => $query->authorName($authorName));
+
+        return new BookResourceCollection($query->get());
     }
 
     /**
@@ -43,7 +48,7 @@ class BookController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  Book $book
+     * @param  Book  $book
      * @return \Illuminate\Http\Response
      */
     public function show(Book $book)

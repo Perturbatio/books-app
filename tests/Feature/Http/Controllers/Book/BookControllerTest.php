@@ -23,11 +23,30 @@ class BookControllerTest extends TestCase
     {
         Book::factory(10)->create();
 
-        $response = $this->get('/api/books');
+        $response = $this->get(route('books.index'));
 
         $response->assertStatus(Response::HTTP_OK)
             ->assertJson(['data' => []])
             ->assertJsonCount(10, 'data');
+    }
+
+    public function testThatBooksIndexCanBeFiltered()
+    {
+        $authorNotSearchedFor = Author::factory()->createOne(['full_name' => 'Not the right author']);
+        Book::factory(7)->hasAttached([$authorNotSearchedFor])->create();
+
+        $authorToFind = Author::factory()->createOne(['full_name' => 'Test Author']);
+        Book::factory(3)
+            ->hasAttached([$authorToFind])
+            ->create();
+
+        $route = route('books.index', ['filters' => ['authorName' => 'Test Author']]);
+
+        $response = $this->get($route);
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJson(['data' => []])
+            ->assertJsonCount(3, 'data');
     }
 
     public function testThatABookCanBeRetrievedById()
@@ -37,7 +56,7 @@ class BookControllerTest extends TestCase
             ->hasAttached([$author])
             ->createOne();
 
-        $response = $this->get('/api/books/' . $book->id);
+        $response = $this->get(route('books.show', ['book' => $book->id]));
 
         $response->assertStatus(Response::HTTP_OK)
             ->assertJson([
@@ -48,9 +67,9 @@ class BookControllerTest extends TestCase
                 'authors' => [
                     [
                         'id' => $author->id,
-                        'full_name' => $author->full_name
-                    ]
-                ]
+                        'full_name' => $author->full_name,
+                    ],
+                ],
             ]);
     }
 }
