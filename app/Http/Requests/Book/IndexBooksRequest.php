@@ -25,6 +25,7 @@ class IndexBooksRequest extends FormRequest
     {
         return [
             'filters.authorName' => 'string',
+            'filters.categoryName' => 'string',
         ];
     }
 }

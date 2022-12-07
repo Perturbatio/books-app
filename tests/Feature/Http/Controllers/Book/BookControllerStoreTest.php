@@ -6,6 +6,7 @@ use App\Http\Controllers\BookController;
 use App\Http\Requests\Book\CreateBookRequest;
 use App\Models\Author;
 use App\Models\Book;
+use App\Models\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
@@ -36,13 +37,15 @@ class BookControllerStoreTest extends TestCase
 
     public function testThatBooksCanBeAdded()
     {
-        $author = Author::factory(1)->createOne();
+        $author = Author::factory()->createOne();
+        $category = Category::factory()->createOne();
 
         $data = [
             'title' => ':TEST_TITLE:',
             'isbn' => '978-0-13-601970-1',
             'price' => 22.99,
             'authors' => [$author->id],
+            'categories' => [$category->id],
         ];
 
         $response = $this->post('/api/books', $data);
@@ -56,6 +59,12 @@ class BookControllerStoreTest extends TestCase
                     [
                         'id' => $author->id,
                         'full_name' => $author->full_name,
+                    ],
+                ],
+                'categories' => [
+                    [
+                        'id' => $category->id,
+                        'name' => $category->name,
                     ],
                 ],
             ]);

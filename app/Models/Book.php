@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 /**
  * @see \Database\Factories\BookFactory
  */
-class Book extends Model // implements FilterableModel
+class Book extends Model
 {
     use HasFactory;
 
@@ -22,7 +22,12 @@ class Book extends Model // implements FilterableModel
 
     public function authors(): BelongsToMany
     {
-        return $this->belongsToMany('Author');
+        return $this->belongsToMany('Author')->withTimestamps();
+    }
+
+    public function categories(): BelongsToMany
+    {
+        return $this->belongsToMany('Category')->withTimestamps();
     }
 
     public function scopeAuthorName(Builder $query, string $name): Builder
@@ -32,16 +37,12 @@ class Book extends Model // implements FilterableModel
             fn (Builder $authorQuery) => $authorQuery->where('full_name', 'LIKE', "%$name%")
         );
     }
-//
-//    public function getAllowedFilters(): array
-//    {
-//        return [
-//            'authorName',
-//        ];
-//    }
-//
-//    public function applyFilters(array $filters): Builder
-//    {
-//        // TODO: Implement applyFilters() method.
-//    }
+
+    public function scopeCategoryName(builder $query, string $name): Builder
+    {
+        return $query->whereHas(
+            'categories',
+            fn (Builder $categoryQuery) => $categoryQuery->where('name', 'LIKE', "%$name%")
+        );
+    }
 }

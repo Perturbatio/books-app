@@ -211,6 +211,7 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         'Author' => \App\Models\Author::class,
         'Book' => \App\Models\Book::class,
+        'Category' => \App\Models\Category::class,
     ])->toArray(),
 
 ];

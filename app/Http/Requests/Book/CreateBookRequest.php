@@ -34,6 +34,7 @@ class CreateBookRequest extends FormRequest
             'title' => 'required|string|min:1|max:255',
             'price' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/|min:0|max:9999999999.99',
             'authors.*' => 'required|exists:authors,id',
+            'categories.*' => 'required|exists:categories,id',
         ];
     }
 

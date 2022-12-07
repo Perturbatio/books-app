@@ -22,7 +22,9 @@ class BookController extends Controller
     {
         $query = Book::query();
 
+        //TODO: extract this to an action, needs to be generic enough to handle new filters in different formats
         $request->whenHas('filters.authorName', fn ($authorName) => $query->authorName($authorName));
+        $request->whenHas('filters.categoryName', fn ($category) => $query->categoryName($category));
 
         return new BookResourceCollection($query->get());
     }
@@ -37,10 +39,12 @@ class BookController extends Controller
      */
     public function store(CreateBookRequest $request)
     {
+        // TODO: extract to an action
         $book = new Book($request->only(['title', 'isbn', 'price']));
         $book->saveOrFail();
 
         $book->authors()->attach($request->get('authors'));
+        $book->categories()->attach($request->get('categories'));
 
         return response(new BookResource($book), Response::HTTP_CREATED);
     }

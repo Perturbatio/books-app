@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,4 +18,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::apiResources([
     'books' => BookController::class,
+    'authors' => AuthorController::class,
+    'categories' => CategoryController::class,
 ]);
