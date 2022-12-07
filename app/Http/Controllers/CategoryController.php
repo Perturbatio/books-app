@@ -26,7 +26,7 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // TODO
     }
 
     /**
@@ -37,7 +37,7 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        //
+        // TODO
     }
 
     /**
@@ -49,7 +49,7 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // TODO
     }
 
     /**
@@ -60,6 +60,6 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        // TODO
     }
 }

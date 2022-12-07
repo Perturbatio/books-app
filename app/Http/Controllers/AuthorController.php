@@ -17,6 +17,7 @@ class AuthorController extends Controller
      */
     public function index()
     {
+        // TODO: move to an action
         return new AuthorResourceCollection(Author::all());
     }
 
@@ -28,6 +29,7 @@ class AuthorController extends Controller
      */
     public function store(Request $request)
     {
+        // TODO: move to an action
         $author = new Author($request->only(['full_name']));
         $author->saveOrFail();
 
@@ -42,7 +44,7 @@ class AuthorController extends Controller
      */
     public function show($id)
     {
-        //
+        // TODO
     }
 
     /**
@@ -54,7 +56,7 @@ class AuthorController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // TODO
     }
 
     /**
@@ -65,6 +67,6 @@ class AuthorController extends Controller
      */
     public function destroy($id)
     {
-        //
+        // TODO
     }
 }

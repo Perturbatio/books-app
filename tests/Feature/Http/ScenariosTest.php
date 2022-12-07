@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Http;
 
+use App\Models\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Tests\TestCase;
@@ -157,6 +158,7 @@ class ScenariosTest extends TestCase
         $authorResponse = $this->postJson(route('authors.store', [
             'full_name' => $authorName,
         ]));
+        $category = Category::whereName('PHP')->first();
 
         $isbn = '978-1491905012';
         $title = 'Modern PHP: New Features and Good Practices';
@@ -169,6 +171,9 @@ class ScenariosTest extends TestCase
             'authors' => [
                 $authorResponse->json('id'),
             ],
+            'categories' => [
+                $category->id,
+            ],
         ]));
 
         $response->assertStatus(Response::HTTP_CREATED)
@@ -178,6 +183,9 @@ class ScenariosTest extends TestCase
                 'price' => $price,
                 'authors' => [
                     ['full_name' => $authorName],
+                ],
+                'categories' => [
+                    ['name' => 'PHP'],
                 ],
             ]);
     }

@@ -98,15 +98,22 @@ class BookControllerStoreTest extends TestCase
 
     public function testCreateBookRequestValidation()
     {
-        $data = [
+        $author = Author::factory()->createOne();
+        $category = Category::factory()->createOne();
+
+        $response = $this->postJson('/api/books', [
             'title' => ':TEST_TITLE:',
             'isbn' => '978-0-13-601970-1',
             'price' => 22.99,
-        ];
-
-        $response = $this->postJson('/api/books', $data);
+            'authors' => [$author->id],
+            'categories' => [$category->id],
+        ]);
 
         $response->assertStatus(Response::HTTP_CREATED)
-            ->assertJson($data);
+            ->assertJson([
+                'title' => ':TEST_TITLE:',
+                'isbn' => '978-0-13-601970-1',
+                'price' => 22.99,
+            ]);
     }
 }
