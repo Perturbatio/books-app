@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Author as AuthorResource;
 use App\Http\Resources\AuthorCollection as AuthorResourceCollection;
 use App\Models\Author;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class AuthorController extends Controller
 {
@@ -26,7 +28,10 @@ class AuthorController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $author = new Author($request->only(['full_name']));
+        $author->saveOrFail();
+
+        return response(new AuthorResource($author), Response::HTTP_CREATED);
     }
 
     /**

@@ -10,7 +10,6 @@ use App\Models\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
-use Illuminate\Validation\ValidationException;
 use JMac\Testing\Traits\AdditionalAssertions;
 use Tests\TestCase;
 
@@ -48,7 +47,7 @@ class BookControllerStoreTest extends TestCase
             'categories' => [$category->id],
         ];
 
-        $response = $this->post('/api/books', $data);
+        $response = $this->postJson('/api/books', $data);
 
         $response->assertStatus(Response::HTTP_CREATED)
             ->assertJson([
@@ -85,12 +84,16 @@ class BookControllerStoreTest extends TestCase
             ->has(Author::factory()->count(1))
             ->createOne($data);
 
-        $response = $this->post('/api/books', $data);
+        $response = $this->postJson('/api/books', $data);
 
-        $this->expectException(ValidationException::class);
-        $this->expectErrorMessage('The ISBN you have provided is already in the database.');
-        $response->assertStatus(Response::HTTP_FOUND)
-            ->assertJson($data);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJson([
+                'errors' => [
+                    'isbn' => [
+                        'The ISBN you have provided is already in the database.',
+                    ],
+                ],
+            ]);
     }
 
     public function testCreateBookRequestValidation()
@@ -101,7 +104,7 @@ class BookControllerStoreTest extends TestCase
             'price' => 22.99,
         ];
 
-        $response = $this->post('/api/books', $data);
+        $response = $this->postJson('/api/books', $data);
 
         $response->assertStatus(Response::HTTP_CREATED)
             ->assertJson($data);

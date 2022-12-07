@@ -41,7 +41,7 @@ class CreateBookRequest extends FormRequest
     public function messages()
     {
         return [
-            'isbn.regex' => 'The ISBN must contain only numbers or hyphens.',
+            'isbn.regex' => 'Invalid ISBN: The ISBN must contain only numbers or hyphens.',
             'isbn.unique' => 'The ISBN you have provided is already in the database.',
             'price.regex' => 'Please provide a valid currency amount to a maximum of two decimal places.',
         ];

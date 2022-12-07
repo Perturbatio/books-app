@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Actions\Book\IndexAction;
+use App\Http\Actions\Book\StoreAction;
 use App\Http\Requests\Book\CreateBookRequest;
 use App\Http\Requests\Book\IndexBooksRequest;
 use App\Http\Resources\Book as BookResource;
@@ -18,15 +20,11 @@ class BookController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(IndexBooksRequest $request)
+    public function index(IndexBooksRequest $request, IndexAction $action)
     {
-        $query = Book::query();
+        $filters = data_get($request->only(['filters.authorName', 'filters.categoryName']), 'filters', []);
 
-        //TODO: extract this to an action, needs to be generic enough to handle new filters in different formats
-        $request->whenHas('filters.authorName', fn ($authorName) => $query->authorName($authorName));
-        $request->whenHas('filters.categoryName', fn ($category) => $query->categoryName($category));
-
-        return new BookResourceCollection($query->get());
+        return new BookResourceCollection($action->handle($filters));
     }
 
     /**
@@ -37,16 +35,11 @@ class BookController extends Controller
      *
      * @throws \Throwable
      */
-    public function store(CreateBookRequest $request)
+    public function store(CreateBookRequest $request, StoreAction $action)
     {
-        // TODO: extract to an action
-        $book = new Book($request->only(['title', 'isbn', 'price']));
-        $book->saveOrFail();
-
-        $book->authors()->attach($request->get('authors'));
-        $book->categories()->attach($request->get('categories'));
-
-        return response(new BookResource($book), Response::HTTP_CREATED);
+        return response(new BookResource(
+            $action->handle($request->only(['title', 'isbn', 'price', 'authors', 'categories']))
+        ), Response::HTTP_CREATED);
     }
 
     /**
